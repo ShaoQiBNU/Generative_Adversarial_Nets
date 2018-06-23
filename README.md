@@ -44,8 +44,9 @@ G的目的：G的能力越强，D(G(z))应该越大，D(x)应该越小，这时V
 ```python
 D_loss = -tf.reduce_mean(tf.log(D_real) + tf.log(1. - D_fake))
 G_loss = -tf.reduce_mean(tf.log(D_fake))
-···
-值得注意的是，论文中提到，比起最小化 tf.reduce_mean(1 - tf.log(D_fake)) ，最大化tf.reduce_mean(tf.log(D_fake)) 更好。
+```
+
+> 值得注意的是，论文中提到，比起最小化 tf.reduce_mean(1 - tf.log(D_fake)) ，最大化tf.reduce_mean(tf.log(D_fake)) 更好。
 
 > 另外一种写法是利用tensorflow自带的tf.nn.sigmoid_cross_entropy_with_logits 函数：
 ```python
