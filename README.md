@@ -23,20 +23,41 @@
 
 > 简单分析一下这个公式，整个式子由两项构成。x表示真实图片，z表示输入G网络的噪声，而G(z)表示G网络生成的图片。
 D(x)表示D网络判断真实图片是否真实的概率（因为x就是真实的，所以对于D来说，这个值越接近1越好）。
-D(G(z))是D网络判断G生成的图片是否真实的概率，G应该希望自己生成的图片“越接近真实越好”。也就是说，G希望D(G(z))尽可能得大，这时V(D, G)会变小。因此式子的最前面的记号是min_G。
+D(G(z))是D网络判断G生成的图片是否真实的概率，G应该希望自己生成的图片“越接近真实越好”。也就是说，G希望D(G(z))尽可能得大。
 
-> D的目的：D的能力越强，D(x)应该越大，D(G(x))应该越小。这时V(D,G)会变大。因此式子对于D来说是求最大(max_D)
-G的目的：G的能力越强，D(G(z))应该越大，D(x)应该越小。这时V(D,G)会变小。因此式子对于G来说是求最小(min_G)
-
-> 训练两个模型的方法：单独交替迭代训练，算法过程如下：
-![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/3.png)
-这里红框圈出的部分是我们要额外注意的。第一步我们训练D，D是希望V(G, D)越大越好，所以是加上梯度(ascending)。第二步训练G时，V(G, D)越小越好，所以是减去梯度(descending)。整个训练过程交替进行。
+> D的目的：D的能力越强，D(x)应该越大，D(G(x))应该越小，这时V(D,G)会变大，因此式子对于D来说是求最大(max_D)。
+G的目的：G的能力越强，D(G(z))应该越大，D(x)应该越小，这时V(D,G)会变小，因此式子对于G来说是求最小(min_G)。
 
 > 优化D，即优化判别网络时，没有生成网络什么事，后面的G(z)这里就相当于已经得到的假样本。优化D的公式的第一项，使得真样本x输入的时候，得到的结果越大越好，因为真样本的预测结果越接近1越好；对于假样本，需要优化的是其结果越小越好，也就是D(G(z))越小越好，因为它的标签为0。但是第一项越大，第二项越小，就矛盾了，所以把第二项改为1-D(G(z))，这样就是越大越好。
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/4.png)
 
 > 优化G的时候，这个时候没有真样本什么事，所以把第一项直接去掉，这时候只有假样本，但是我们说这个时候是希望假样本的标签是1，所以是D(G(z))越大越好，但是为了统一成1-D(G(z))的形式，那么只能是最小化1-D(G(z))，本质上没有区别，只是为了形式的统一。之后这两个优化模型可以合并起来写，就变成最开始的最大最小目标函数了。
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/5.png)
+
+> 训练两个模型的方法：单独交替迭代训练，算法过程如下：
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/3.png)
+这里红框圈出的部分是我们要额外注意的。第一步我们训练D，D是希望V(G, D)越大越好，所以是加上梯度(ascending)。第二步训练G时，V(G, D)越小越好，所以是减去梯度(descending)。整个训练过程交替进行。
+
+# 四. loss函数设定
+
+> 由于tensorflow只能做minimize，loss function可以写成如下：
+```python
+D_loss = -tf.reduce_mean(tf.log(D_real) + tf.log(1. - D_fake))
+G_loss = -tf.reduce_mean(tf.log(D_fake))
+···
+值得注意的是，论文中提到，比起最小化 tf.reduce_mean(1 - tf.log(D_fake)) ，最大化tf.reduce_mean(tf.log(D_fake)) 更好。
+
+> 另外一种写法是利用tensorflow自带的tf.nn.sigmoid_cross_entropy_with_logits 函数：
+```python
+D_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+    logits=D_logit_real, labels=tf.ones_like(D_logit_real)))
+D_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+    logits=D_logit_fake, labels=tf.zeros_like(D_logit_fake)))
+D_loss = D_loss_real + D_loss_fake
+G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+    logits=D_logit_fake, labels=tf.ones_like(D_logit_fake)))
+```
+
 
 
 
