@@ -40,6 +40,7 @@ G的目的：G的能力越强，D(G(z))应该越大，D(x)应该越小，这时V
 
 # 四. loss函数设定
 > 这里简单说一下Loss的计算方式，由于我们上面构建了两个神经网络：generator和discriminator，因此需要分别计算loss。
+
 > discriminator discriminator的目的在于对于给定的真图片，识别为真（1），对于generator生成的图片，识别为假（0），因此它的loss包含了真实图片的loss和生成器图片的loss两部分。
 
 > generator generator的目的在于让discriminator识别不出它的图片是假的，如果用1代表真，0代表假，那么generator生成的图片经过discriminator后要输出为1，因为generator想要骗过discriminator。
