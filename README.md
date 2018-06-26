@@ -234,3 +234,15 @@ with tf.Session() as sess:
             print('G_loss: {:.4}'.format(G_loss_curr))
             print()
 ```
+## (十四) 结果
+> 生成结果如下：取前10张
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/001.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/002.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/003.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/004.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/005.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/006.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/007.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/008.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/009.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/010.png)
