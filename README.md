@@ -235,7 +235,7 @@ with tf.Session() as sess:
             print()
 ```
 ## (十四) 结果
-> 生成结果如下：取前10张
+> 生成结果如下：取前12张
 
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/001.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/002.png)
@@ -247,3 +247,5 @@ with tf.Session() as sess:
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/008.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/009.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/010.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/011.png)
+![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/012.png)
