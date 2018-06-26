@@ -70,6 +70,7 @@ import os
 from tensorflow.examples.tutorials.mnist import input_data
 ```
 ## (二) tensorflow设置
+> 避免出现变量已经被使用，无法allow的情况
 ```python
 tf.reset_default_graph()
 ```
@@ -120,7 +121,7 @@ theta_G = [G_W1, G_W2, G_b1, G_b2]
 ## (七) 网络结构
 ### 判别网络结构
 > 判别网络设置 
-> 输入层——784个结点, 隐层（全连接层）——128个结点, 激活函数relu, 输出层——1个结点, 激活函数sigmoid
+> 输入层——784个结点；隐层（全连接层）——128个结点，激活函数relu；输出层——1个结点，激活函数sigmoid
 ```python
 def discriminator(D):
     
@@ -137,7 +138,7 @@ def discriminator(D):
 ```
 ### 生成网络结构
 > 生成网络设置 
-> 输入层——100个结点, 隐层（全连接层）——128个结点, 激活函数relu, 输出层——784个结点, 激活函数sigmoid
+> 输入层——100个结点；隐层（全连接层）——128个结点，激活函数relu；输出层——784个结点，激活函数sigmoid
 ```python
 def generator(G):
     
