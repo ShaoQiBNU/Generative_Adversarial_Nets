@@ -236,6 +236,7 @@ with tf.Session() as sess:
 ```
 ## (十四) 结果
 > 生成结果如下：取前10张
+
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/001.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/002.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/003.png)
