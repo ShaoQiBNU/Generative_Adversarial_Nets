@@ -63,7 +63,7 @@ D_loss = D_loss_real + D_loss_fake
 G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
     logits=D_logit_fake, labels=tf.ones_like(D_logit_fake)))
 ```
-# 五. GAN实现MNIST
+# 五. GAN实现MNIST——普通全连接
 
 ## (一) 导入包
 ```python
@@ -254,3 +254,124 @@ with tf.Session() as sess:
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/010.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/011.png)
 ![Image text](https://github.com/ShaoQiBNU/Generative_Adversarial_Nets/blob/master/images/012.png)
+
+# 六. DCGAN实现MNIST——采用卷积神经网络
+## (一) 导入包
+```python
+############# load packages #############
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.examples.tutorials.mnist import input_data
+```
+
+## (二) tensorflow设置
+> 避免出现变量已经被使用，无法allow的情况
+```python
+tf.reset_default_graph()
+```
+
+## (三) 读取数据
+```python
+mnist = input_data.read_data_sets('MNIST_sets', one_hot=True)
+```
+
+## (四) 定义真实图片和噪声图片的输入
+```python
+############# inputs: real and noise #############
+def get_inputs(noise_dim, image_height, image_width, image_depth):
+    """
+    noise_dim: 噪声图片的size
+    image_height: 真实图像的height
+    image_width: 真实图像的width
+    image_depth: 真实图像的depth
+    """ 
+    inputs_real = tf.placeholder(tf.float32, [None, image_height, image_width, image_depth], name='inputs_real')
+    inputs_noise = tf.placeholder(tf.float32, [None, noise_dim], name='inputs_noise')
+    
+    return inputs_real, inputs_noise
+```
+
+## (五) 生成器
+> 生成器网络结构如下：
+> 第一层：100 x 1 to 4 x 4 x 512
+100 x 1-----> 8192 x 1 全连接层
+8192 x 1 -----> 4 x 4 x 512 reshape
+4 x 4 x 512 batch normalization, leaky relu, dropout
+
+> 第二层：4 x 4 x 512 to 7 x 7 x 256
+4 x 4 x 512 -----> 7 x 7 x 256 卷积层
+7 x 7 x 256 batch normalization, leaky relu, dropout
+
+> 第三层：7 x 7 x 256 to 14 x 14 x 128
+7 x 7 x 256 -----> 14 x 14 x 128 反卷积层
+14 x 14 x 128 batch normalization, leaky relu, dropout
+
+> 第四层：14 x 14 x 128 to 28 x 28 x 1
+14 x 14 x 128 -----> 28 x 28 x 1 反卷积层
+28 x 28 x 1 tanh
+> 注意：MNIST原始数据集的像素范围在0-1，这里的生成图片范围为(-1,1)，因此在训练时，记住要把MNIST像素范围进行resize
+```python
+############# generator #############
+def get_generator(noise_img, output_dim, is_train=True, alpha=0.01):
+    """
+    noise_img: 噪声信号，tensor类型
+    output_dim: 生成图片的depth
+    is_train: 是否为训练状态，该参数主要用于作为batch_normalization方法中的参数使用
+    alpha: Leaky ReLU系数
+    """
+    
+    with tf.variable_scope("generator", reuse=(not is_train)):
+        ########## 100 x 1 to 4 x 4 x 512 ##########
+        # 全连接层 100 x 1 to 8192 x 1
+        layer1 = tf.layers.dense(noise_img, 4*4*512)
+        # reshape 8192 x 1 to 4 x 4 x 512
+        layer1 = tf.reshape(layer1, [-1, 4, 4, 512])
+        # batch normalization
+        layer1 = tf.layers.batch_normalization(layer1, training=is_train)
+        # Leaky ReLU
+        layer1 = tf.maximum(alpha * layer1, layer1)
+        # dropout
+        layer1 = tf.nn.dropout(layer1, keep_prob=0.8)
+        
+        ########## 4 x 4 x 512 to 7 x 7 x 256 ########## 
+        layer2 = tf.layers.conv2d_transpose(layer1, 256, 4, strides=1, padding='valid')
+        # batch normalize
+        layer2 = tf.layers.batch_normalization(layer2, training=is_train)
+        # Leaky ReLU
+        layer2 = tf.maximum(alpha * layer2, layer2)
+        # dropout
+        layer2 = tf.nn.dropout(layer2, keep_prob=0.8)
+        
+        ########## 7 x 7 256 to 14 x 14 x 128 ##########
+        layer3 = tf.layers.conv2d_transpose(layer2, 128, 3, strides=2, padding='same')
+        # batch normalize
+        layer3 = tf.layers.batch_normalization(layer3, training=is_train)
+        # Leaky ReLU
+        layer3 = tf.maximum(alpha * layer3, layer3)
+        # dropout
+        layer3 = tf.nn.dropout(layer3, keep_prob=0.8)
+        
+        ########## 14 x 14 x 128 to 28 x 28 x 1 ##########
+        logits = tf.layers.conv2d_transpose(layer3, output_dim, 3, strides=2, padding='same')
+        # MNIST原始数据集的像素范围在0-1，这里的生成图片范围为(-1,1)
+        # 因此在训练时，记住要把MNIST像素范围进行resize
+        outputs = tf.tanh(logits)
+        
+        return outputs
+```
+## (十四) 结果
+
+## (十四) 结果
+## (十四) 结果
+
+
+
+
+
+
+
+
+
+
+
